@@ -24,11 +24,11 @@ payload_schema = schema.Schema(
             error="type_error",
         ),
         "content": schema.Schema(lambda x: len(x) > 0, error="content_error"),
-        "price": schema.Schema(float, error="price_error"),
+        "price": schema.Use(float, error="price_error"),
         "pay_or_gain": schema.Schema(
             lambda x: x in ["收入", "支出"], error="pay_or_gain_error"
         ),
-        "ext": schema.Schema(lambda x: len(x) > 0, error="ext_error"),
+        "ext": schema.Schema(lambda x: len(x) >= 0, error="ext_error"),
     },
 )
 
