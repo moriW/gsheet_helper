@@ -20,7 +20,25 @@ payload_schema = schema.Schema(
             lambda x: datetime.datetime.strptime(x, "%d/%m/%Y"), error="date_error"
         ),
         "go_to_type": schema.Schema(
-            lambda x: x in ["工资", "奖金", "衣", "食", "住", "行", "通讯", "娱乐", "学习"],
+            lambda x: x
+            in [
+                "房屋水电",
+                "通讯",
+                "交通",
+                "游戏娱乐",
+                "旅游娱乐",
+                "衣",
+                "食",
+                "零食",
+                "日用品",
+                "人际交往",
+                "医疗",
+                "学习",
+                "影音娱乐",
+                "水果",
+                "工资",
+                "奖金",
+            ],
             error="type_error",
         ),
         "content": schema.Schema(lambda x: len(x) > 0, error="content_error"),
