@@ -7,7 +7,7 @@
 # @author: Mori
 #
 
-from tornado.web import RequestHandler
+from tornado.web import RequestHandler, StaticFileHandler
 from .bookkeeping import BookkeepingHandler
 from .autofirebase import AutoFirebaseHandler
 
@@ -22,6 +22,7 @@ HANDLERS = [
     (r"/_health", HealthHandler),
     (r"/bookkeeping", BookkeepingHandler),
     (r"/autofirebase/(reading_sheet|compelete_sheet)", AutoFirebaseHandler),
+    (r"/autofirebase/static/(.*)", StaticFileHandler, {"path": "static/"}),
 ]
 
 __all__ = ["HANDLERS"]
