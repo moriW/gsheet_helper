@@ -106,6 +106,7 @@ class AutoFirebaseService:
                 + ["否"]
             )
             update_values = [x.replace("C&#39;est l&#39;", "") for x in update_values]
+            update_values = [x.replace("&#39;", "") for x in update_values]
             wks.update_row(index + 2, values=update_values, col_offset=first_i18n_index)
             LOGGER.info(index + 2, update_values)
 
@@ -173,7 +174,7 @@ class AutoFirebaseService:
                 assert pushdate > now
             except Exception:
                 continue
-            if line_dict[IS_CONFIG_KEY] == ["是", ""]:
+            if line_dict[IS_CONFIG_KEY] in ["是", ""]:
                 continue
             if (
                 len(
@@ -185,3 +186,10 @@ class AutoFirebaseService:
                 continue
             paresed_lines.extend(cls.parse_line_dict(line_dict))
         return paresed_lines
+
+
+if __name__ == "__main__":
+    from moreover.base.config import parse_config_file
+
+    parse_config_file("config.json")
+    print(AutoFirebaseService.read_sheet())
