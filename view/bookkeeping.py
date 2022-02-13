@@ -75,7 +75,8 @@ class BookkeepingHandler(JsonHandler):
         IOLoop.current().call_later(
             delay=0,
             callback=BookkeepingService.append_row,
-            kwargs=dict(who=who, row=self.parsed_payload),
+            who=who,
+            row=self.parsed_payload,
         )
         # BookkeepingService.append_row(who=who, row=self.parsed_payload)
         return self.render_json({})
