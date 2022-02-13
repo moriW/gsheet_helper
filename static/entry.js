@@ -1,5 +1,3 @@
-let compeleteBtn = document.getElementById("compelete");
-let autofillBtn = document.getElementById("autofill");
 
 async function compelete() {
     let resp = await fetch('https://gsheet.moridisa.com/autofirebase/compelete_sheet');
@@ -25,18 +23,6 @@ async function autofill() {
     let resp = await fetch('https://gsheet.moridisa.com/autofirebase/reading_sheet');
     let resp_json = await resp.json();
     console.log(resp_json)
-    // await chrome.storage.sync.set({ 'fuck_fcm_resp': resp_json })
-    let tabs = await chrome.tabs.query({ currentWindow: true, active: true })
-    let tabId = tabs[0].id
-    let result = await chrome.scripting.executeScript(
-        {
-            "target": {
-                "tabId": tabId
-            },
-            "func": inject_func,
-            "args": [resp_json.data.row]
-        },
-    )
 };
 
 
@@ -325,6 +311,9 @@ async function inject_func(noti_list) {
     alert("Shift Bro, 填完了");
 
 }
+
+let compeleteBtn = document.getElementById("compelete");
+let autofillBtn = document.getElementById("autofill");
 
 compeleteBtn.addEventListener("click", compelete);
 autofillBtn.addEventListener("click", autofill);

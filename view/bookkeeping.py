@@ -9,6 +9,7 @@
 import schema
 import datetime
 from typing import List
+from tornado.ioloop import IOLoop
 from tornado.web import HTTPError
 from moreover.handler.json import JsonHandler
 from service.bookkeeping import BookkeepingService
@@ -71,5 +72,10 @@ class BookkeepingHandler(JsonHandler):
         who = self.request.headers.get("who", None)
         if who not in ["jae", "mori"]:
             raise HTTPError(400, log_message="unknow user")
-        BookkeepingService.append_row(who=who, row=self.parsed_payload)
+        IOLoop.current().call_later(
+            delay=0,
+            callback=BookkeepingService.append_row,
+            kwargs=dict(who=who, row=self.parsed_payload),
+        )
+        # BookkeepingService.append_row(who=who, row=self.parsed_payload)
         return self.render_json({})

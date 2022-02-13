@@ -6,6 +6,7 @@
 # @author: Mori
 #
 
+import os
 from tornado.web import HTTPError
 from moreover.handler.json import JsonHandler
 from service.autofirebase import AutoFirebaseService
@@ -20,6 +21,10 @@ class AutoFirebaseHandler(JsonHandler):
 
         elif action == "compelete_sheet":
             AutoFirebaseService.trans_and_compelete_sheet()
+
+        elif action == "js":
+            with open("static/entry.js", "r") as _f:
+                data["file"] = _f.read()
 
         else:
             raise HTTPError(400, "unknow action")

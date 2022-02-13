@@ -21,7 +21,7 @@ class HealthHandler(RequestHandler):
 HANDLERS = [
     (r"/_health", HealthHandler),
     (r"/bookkeeping", BookkeepingHandler),
-    (r"/autofirebase/(reading_sheet|compelete_sheet)", AutoFirebaseHandler),
+    (r"/autofirebase/(reading_sheet|compelete_sheet|js)", AutoFirebaseHandler),
     (r"/autofirebase/static/(.*)", StaticFileHandler, {"path": "static/"}),
 ]
 
