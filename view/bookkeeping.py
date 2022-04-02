@@ -40,6 +40,7 @@ payload_schema = schema.Schema(
                 "水果",
                 "工资",
                 "奖金",
+                "生产力/工具",
             ],
             error="type_error",
         ),

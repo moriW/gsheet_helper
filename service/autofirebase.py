@@ -28,7 +28,7 @@ DESC_KEY = "描述"
 NAME_KEY = "名称"
 PIC_KEY = "配图链接"
 CATE_KEY = "配图"
-I18NS = ["es", "fr", "pt", "ru", "de"]
+I18NS = ["de", "es", "fr", "pt", "ru"]
 I18N_MAP = {
     "de": ["German"],
     "es": ["Spanish"],
@@ -91,6 +91,7 @@ class AutoFirebaseService:
 
             title, desc = line_dict[TITLE_KEY], line_dict[DESC_KEY]
             update_values = (
+                ["否"] +
                 [
                     translate_client.translate(
                         values=title, source_language="en", target_language=lan
@@ -103,12 +104,12 @@ class AutoFirebaseService:
                     )["translatedText"]
                     for lan in I18NS
                 ]
-                + ["否"]
             )
             update_values = [x.replace("C&#39;est l&#39;", "") for x in update_values]
             update_values = [x.replace("&#39;", "") for x in update_values]
-            wks.update_row(index + 2, values=update_values, col_offset=first_i18n_index)
-            LOGGER.info(index + 2, update_values)
+            update_values = [x.replace("&amp;", "") for x in update_values]
+            wks.update_row(index + 2, values=update_values, col_offset=first_i18n_index - 1)
+            LOGGER.info(f"{index + 2}, {update_values}")
 
     @classmethod
     def parse_line_dict(cls, line_dict: Dict) -> List[Dict]:
@@ -192,4 +193,5 @@ if __name__ == "__main__":
     from moreover.base.config import parse_config_file
 
     parse_config_file("config.json")
-    print(AutoFirebaseService.read_sheet())
+    print(AutoFirebaseService.trans_and_compelete_sheet())
+    # print(AutoFirebaseService.read_sheet())
