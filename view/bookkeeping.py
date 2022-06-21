@@ -6,12 +6,14 @@
 # @author: Mori
 #
 
+from cmath import log
+from moreover.handler.json import JsonResponseHandler
 import schema
 import datetime
 from typing import List
 from tornado.ioloop import IOLoop
 from tornado.web import HTTPError
-from moreover.handler.json import JsonHandler
+from moreover.handler import JsonHandler, FormHandler
 from service.bookkeeping import BookkeepingService
 
 
@@ -80,5 +82,32 @@ class BookkeepingHandler(JsonHandler):
             who=who,
             row=self.parsed_payload,
         )
-        # BookkeepingService.append_row(who=who, row=self.parsed_payload)
+        return self.render_json({})
+
+
+class BookkeepingCSVHandler(FormHandler, JsonResponseHandler):
+    def post(self):
+        who = self.request.headers.get("who", None)
+        if who not in ["jae", "mori"]:
+            raise HTTPError(400, log_message="unknow user")
+
+        if self.form_data["files"]["content_type"] != "text/csv":
+            raise HTTPError(400, log_message="error file content type")
+
+        csv_from = "wechat"
+        if "alipay" in self.form_data["files"]["filename"]:
+            csv_from = "ali"
+
+        csv_codeset = "utf8"
+        if csv_from == "ali":
+            csv_codeset = "gbk"
+
+        csv_content = self.form_data["files"]["body"].decode(csv_codeset)
+        IOLoop.current().call_later(
+            delay=0,
+            callback=BookkeepingService.sync_csv_to_wks,
+            who=who,
+            csv_data=csv_content.split("\n"),
+            csv_from=csv_from,
+        )
         return self.render_json({})

@@ -8,7 +8,7 @@
 #
 
 from tornado.web import RequestHandler, StaticFileHandler
-from .bookkeeping import BookkeepingHandler
+from .bookkeeping import BookkeepingHandler, BookkeepingCSVHandler
 from .autofirebase import AutoFirebaseHandler
 
 
@@ -21,6 +21,7 @@ class HealthHandler(RequestHandler):
 HANDLERS = [
     (r"/_health", HealthHandler),
     (r"/bookkeeping", BookkeepingHandler),
+    (r"/bookkeepingcsv", BookkeepingCSVHandler),
     (r"/autofirebase/(reading_sheet|compelete_sheet|js)", AutoFirebaseHandler),
     (r"/autofirebase/static/(.*)", StaticFileHandler, {"path": "static/"}),
 ]
