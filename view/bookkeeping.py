@@ -60,7 +60,7 @@ class BookkeepingHandler(JsonHandler):
     @property
     def parsed_payload(self) -> List:
         try:
-            data = payload_schema.validate(self.data)
+            data = payload_schema.validate(self.body_data)
             return [
                 data["date"].date().isoformat(),
                 data["go_to_type"],
