@@ -8,7 +8,7 @@ RUN apk add --no-cache git g++ musl-dev libffi-dev
 
 RUN pip3 install -U pip
 
-RUN pip3 install -r requirements.txt
+RUN pip3 install -U -r requirements.txt
 
 COPY . .
 
