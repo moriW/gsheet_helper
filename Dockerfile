@@ -2,6 +2,8 @@ FROM python:3.8-alpine
 
 WORKDIR /app
 
+USER root
+
 COPY requirements.txt ./
 
 RUN apk add --no-cache git g++ musl-dev libffi-dev
