@@ -88,6 +88,13 @@ class BookkeepingHandler(JsonHandler):
 class BookkeepingCSVHandler(FormHandler, JsonResponseHandler):
     def post(self):
         who = self.request.headers.get("who", None)
+        target_date = self.request.headers.get("date", None)
+
+        try:
+            target_date = datetime.datetime.strptime(target_date, "%Y-%m")
+        except:
+            target_date = None
+
         if who not in ["jae", "mori"]:
             raise HTTPError(400, log_message="unknow user")
 
@@ -109,5 +116,6 @@ class BookkeepingCSVHandler(FormHandler, JsonResponseHandler):
             who=who,
             csv_data=csv_content.split("\n"),
             csv_from=csv_from,
+            target_date=target_date
         )
         return self.render_json({})

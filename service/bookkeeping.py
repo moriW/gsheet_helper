@@ -8,6 +8,7 @@
 
 import csv
 import datetime
+from dateutil.relativedelta import relativedelta
 from typing import Dict, List
 
 import pygsheets
@@ -23,8 +24,10 @@ define("BOOKKEEPING_TEMPLATE_NAME", default_value="template")
 
 class BookkeepingService:
     @classmethod
-    def get_wks_name(cls, who: str):
-        return who + "-" + datetime.datetime.now().strftime("%Y/%m")
+    def get_wks_name(
+        cls, who: str, target_date: datetime.datetime = datetime.datetime.now()
+    ):
+        return who + "-" + target_date.strftime("%Y/%m")
 
     @classmethod
     def wks_set_format(cls, wks: pygsheets.Worksheet):
@@ -107,7 +110,11 @@ class BookkeepingService:
         return data
 
     @classmethod
-    def csv_diff(cls, current_csv: List, from_csv: List) -> List:
+    def csv_diff(
+        cls,
+        current_csv: List,
+        from_csv: List,
+    ) -> List:
         lines = []
         for from_line in from_csv:
             is_exists = False
@@ -122,9 +129,15 @@ class BookkeepingService:
         return lines
 
     @classmethod
-    def sync_csv_to_wks(cls, who: str, csv_data: List, csv_from: str):
+    def sync_csv_to_wks(
+        cls,
+        who: str,
+        csv_data: List,
+        csv_from: str,
+        target_date: datetime.datetime = datetime.datetime.now(),
+    ):
         cred = read_credentials()
-        wks_name = cls.get_wks_name(who)
+        wks_name = cls.get_wks_name(who, target_date=target_date)
         wks = get_or_create_wks(
             cred=cred,
             sheet_id=global_config.BOOKKEEPING_SHEET_ID,
@@ -138,13 +151,15 @@ class BookkeepingService:
         else:
             datas = cls.parse_wechat_csv(csv_data)
 
-        min_date = datetime.datetime.now().strftime("%Y-%m-01")
+        min_date = datetime.datetime(
+            year=target_date.year, month=target_date.month, day=1
+        )
+        max_date = min_date + relativedelta(months=1)
 
         datas = [
             item
             for item in datas
-            if datetime.datetime.strptime(item[0], "%Y-%m-%d")
-            >= datetime.datetime.strptime(min_date, "%Y-%m-%d")
+            if max_date > datetime.datetime.strptime(item[0], "%Y-%m-%d") >= min_date
         ]
 
         all_values = wks.get_all_values(
